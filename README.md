@@ -1,0 +1,19 @@
+# Chat Server
+
+Node/Express/Socket/Postgresql
+
+node index.js
+
+**to run server**
+
+requires .env file:
+
+```sh
+SECRET_JWT='SECRET FOR JWT AUTHORIZATION'
+APP_PORT='PORT WHERE APP RUNS'
+DB_USER='POSTGRES USER'
+DB_HOST='POSTGRES HOST'
+DB_DATABASE='NAME OF DATABASE'
+DB_PASS='POSTGRES PASSWORD'
+DB_PORT='DATABASE PORT'
+```
