@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const generateAccessToken = (id, email) => {
-    const payload = { id, email };
+    const payload = { email };
     return jwt.sign(payload, process.env.SECRET_JWT, { expiresIn: '24h'})
 }
 
@@ -16,7 +16,8 @@ exports.register = (req, res) => {
             res.sendStatus(500)
         }
         if (user.rowCount === 1) {
-            res.sendStatus(201)
+            const token = generateAccessToken(req.body.email)
+            res.json({ token })
         } else {
             res.sendStatus(500)
         }
@@ -32,7 +33,7 @@ exports.login = (request, response) => {
         if (user) {
             const validPassword = bcrypt.compareSync(request.body.password, user.password);
             if (validPassword) {
-                const token = generateAccessToken()
+                const token = generateAccessToken(request.body.email)
                 response.json({ token })
             } else {
                 response.sendStatus(401)
