@@ -6,6 +6,7 @@ const authMiddleware = require('./middlewares/auth')
 exports.init = (app) => {
     app.post('/login', authController.login)
     app.post('/register', authController.register)
+    app.get('/current-user', authMiddleware, authController.getCurrentUser)
 
     app.get('/messages', authMiddleware, messagesController.getMessages)
     app.post('/messages', authMiddleware, messagesController.addMessage)
