@@ -1,14 +1,16 @@
 require('dotenv').config()
-const PORT = process.env.APP_PORT || 3012;
+
 
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const ws = require('ws')
 
+const WS_PORT = process.env.WS_PORT || 5000
+
 const wss = new ws.Server({
     port: 5000
-}, () => console.log(`WebSocket started on 5000`))
+}, () => console.log(`WebSocket started on ${WS_PORT}`))
 
 wss.on('connection', function connection(ws) {
 
@@ -39,6 +41,8 @@ app.use(cors())
 
 let router = require('./router')
 router.init(app)
+
+const PORT = process.env.APP_PORT || 3012;
 
 app.listen(PORT, () => {
     console.log(`Chart Server started on port ${PORT}`)
