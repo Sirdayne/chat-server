@@ -2,8 +2,8 @@ const pool = require('../services/pool').pool;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const generateAccessToken = (id, email) => {
-    const payload = { id, email };
+const generateAccessToken = (id, email, role) => {
+    const payload = { id, email, role };
     return jwt.sign(payload, process.env.SECRET_JWT, { expiresIn: '24h'})
 }
 
@@ -16,10 +16,10 @@ exports.register = (request, response) => {
             if (err) {
                 response.sendStatus(401)
             }
-            const userId = res && res.rows[0] && res.rows[0].id ? res.rows[0].id : null
-            if (userId && res.rowCount === 1) {
-                const token = generateAccessToken(userId, request.body.email)
-                response.json({ token })
+            const user = res && res.rows[0] && res.rows[0] ? res.rows[0] : null
+            if (user.id && user.email && res.rowCount === 1) {
+                const token = generateAccessToken(user.id, user.email, user.role)
+                response.json({ token, id: user.id, email: user.email, role: user.role })
             } else {
                 response.sendStatus(401)
             }
@@ -35,11 +35,11 @@ exports.login = (request, response) => {
         if (err || !request.body.password) {
             response.sendStatus(401)
         }
-        if (user) {
+        if (user && user.id && user.email) {
             const validPassword = bcrypt.compareSync(request.body.password, user.password);
             if (validPassword) {
-                const token = generateAccessToken(user.id, user.email)
-                response.json({ token })
+                const token = generateAccessToken(user.id, user.email, user.role)
+                response.json({ token, id: user.id, email: user.email, role: user.role })
             } else {
                 response.sendStatus(401)
             }
