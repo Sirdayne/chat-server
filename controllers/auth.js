@@ -12,12 +12,12 @@ exports.register = (request, response) => {
     const hashPassword = bcrypt.hashSync(request.body.password, salt)
     const role = 'user'
     try {
-        pool.query('INSERT INTO users(email, password, role) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING id', [request.body.email, hashPassword, role], (err, res) => {
+        pool.query('INSERT INTO users(email, password, role) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *', [request.body.email, hashPassword, role], (err, res) => {
             if (err) {
                 response.sendStatus(401)
             }
             const user = res && res.rows[0] && res.rows[0] ? res.rows[0] : null
-            if (user.id && user.email && res.rowCount === 1) {
+            if (user && user.id && user.email && res.rowCount === 1) {
                 const token = generateAccessToken(user.id, user.email, user.role)
                 response.json({ token, id: user.id, email: user.email, role: user.role })
             } else {
