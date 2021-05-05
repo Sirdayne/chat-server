@@ -12,7 +12,7 @@ exports.register = (request, response) => {
     const hashPassword = bcrypt.hashSync(request.body.password, salt)
     const role = 'user'
     try {
-        pool.query('INSERT INTO users(email, password, role) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *', [request.body.email, hashPassword, role], (err, res) => {
+        pool.query('INSERT INTO users(email, password, role, color) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING RETURNING *', [request.body.email, hashPassword, role, request.body.color], (err, res) => {
             if (err) {
                 response.sendStatus(401)
             }
