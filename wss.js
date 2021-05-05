@@ -34,7 +34,8 @@ wss.on('connection', function connection(ws) {
 
 function addMessage(requestMessage) {
     const payload = { user_id: requestMessage.user_id, message: requestMessage.message, event: requestMessage.event }
-    wsMessagesController.addMessage(payload, (err, res) => {
+    wsMessagesController.addMessageAndReturnWithColor(payload, (err, res) => {
+
         const responseMessage = res && res.rows && res.rows[0] ? res.rows[0] : null
 
         if (responseMessage && responseMessage.id) {
@@ -44,6 +45,7 @@ function addMessage(requestMessage) {
                 user_id: responseMessage.user_id,
                 email: requestMessage.email,
                 message: responseMessage.message,
+                color: responseMessage.color,
                 created_at: responseMessage.created_at
             }
             broadcastMessage(msg)

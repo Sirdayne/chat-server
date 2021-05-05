@@ -34,3 +34,20 @@ exports.findById = (request, response) => {
         response.sendStatus(404)
     }
 }
+
+exports.updateColor = (request, response) => {
+    try {
+        pool.query('UPDATE users SET color = $2 WHERE id = $1', [request.params.id, request.body.color], (err, res) => {
+            if (err) {
+                response.sendStatus(500)
+            }
+            if (res.rowCount === 1) {
+                response.sendStatus(200)
+            } else {
+                response.sendStatus(404)
+            }
+        })
+    } catch(e) {
+        response.sendStatus(500)
+    }
+}

@@ -1,6 +1,5 @@
 const authController = require('./controllers/auth')
 const usersController = require('./controllers/users')
-const messagesController = require('./controllers/wsMessages')
 const authMiddleware = require('./middlewares/auth')
 
 exports.init = (app) => {
@@ -10,4 +9,5 @@ exports.init = (app) => {
 
     app.get('/users', authMiddleware, usersController.all)
     app.get('/users/:id', authMiddleware, usersController.findById)
+    app.put('/user_color/:id', authMiddleware, usersController.updateColor)
 }
