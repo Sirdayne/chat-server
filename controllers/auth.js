@@ -16,10 +16,11 @@ exports.register = (request, response) => {
             if (err) {
                 response.sendStatus(401)
             }
-            const user = res && res.rows[0] && res.rows[0] ? res.rows[0] : null
+            const user = res?.rows[0];
             if (user && user.id && user.email && res.rowCount === 1) {
-                const token = generateAccessToken(user.id, user.email, user.role)
-                response.json({ token, id: user.id, email: user.email, role: user.role })
+                const { id, email, role, color } = user
+                const token = generateAccessToken(user.id, email, role)
+                response.json({ token, id, email, role, color })
             } else {
                 response.sendStatus(401)
             }
@@ -38,8 +39,9 @@ exports.login = (request, response) => {
         if (user && user.id && user.email) {
             const validPassword = bcrypt.compareSync(request.body.password, user.password);
             if (validPassword) {
+                const { id, email, role, color } = user
                 const token = generateAccessToken(user.id, user.email, user.role)
-                response.json({ token, id: user.id, email: user.email, role: user.role })
+                response.json({ token, id, email, role, color })
             } else {
                 response.sendStatus(401)
             }
@@ -57,8 +59,8 @@ exports.getCurrentUser = (request, response) => {
             }
             if (res && res.rows && res.rows.length === 1) {
                 const user = res?.rows[0]
-                const { id, email, role } = user
-                response.send({ id, email, role })
+                const { id, email, role, color } = user
+                response.send({ id, email, role, color })
             } else {
                 response.sendStatus(401)
             }

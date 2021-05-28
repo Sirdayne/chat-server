@@ -27,15 +27,9 @@ function addMessage(requestMessage) {
     wsMessagesController.addMessageAndReturnWithColor(payload, (err, res) => {
         const responseMessage = res && res.rows && res.rows[0] ? res.rows[0] : null
         if (responseMessage && responseMessage.id) {
-            const msg = {
-                id: responseMessage.id,
-                event: responseMessage.event,
-                user_id: responseMessage.user_id,
-                email: requestMessage.email,
-                message: responseMessage.message,
-                color: responseMessage.color,
-                created_at: responseMessage.created_at
-            }
+            const { id, event, user_id, message, color, created_at } = responseMessage
+            const { email } = requestMessage
+            const msg = { id, event, user_id, email, message, color, created_at}
             broadcastMessage(msg)
         }
     })
